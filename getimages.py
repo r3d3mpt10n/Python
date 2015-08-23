@@ -16,7 +16,7 @@ from CUST_INFO import *
 ##CUST_NAME = ""
 
 
-## function that processes url, if there are any spaces it replaces with '%20' ##
+## If there are any spaces this will replace them with '%20' ##
 
 def process_url(raw_url):
     if ' ' not in raw_url[-1]:
@@ -27,11 +27,10 @@ def process_url(raw_url):
         raw_url=raw_url.replace(' ','%20')
         return raw_url
 
-url=CUST_URL ## Input cust_url varibale into this section.
+url=CUST_URL
 parse_object=urlparse(url)
 dirname=basename(parse_object.path)
 if not os.path.exists('images'):
-##os.mkdir("images")
 os.mkdir("images/"+(CUST_NAME))
 os.chdir("images/"+(CUST_NAME))
 
