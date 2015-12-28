@@ -27,6 +27,7 @@ def check():
 def runBackup(exists, BFILE, DIR):
     with tarfile.open(BFILE, 'w:bz2') as tar:
         tar.add(DIR, arcname=os.path.basename(DIR))
+	removeOld()
     
 def removeOld():
     for name in os.listdir(BDIR):
