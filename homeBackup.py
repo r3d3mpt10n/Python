@@ -16,7 +16,7 @@ now30 = now - delta
 
 def check():
     if os.path.isdir(BDIR):
-        exists = 'rue'
+        exists = 'true'
         runBackup(exists, BFILE, DIR)
     else:
         exists = 'false'
