@@ -24,7 +24,7 @@ def check(BDIR,DIR):
     except OSError as e:
         print("'%s' Does not exist. This program will now exit\n "
                "Error is %s" % (BDIR, e))
-        return(exists, e)
+    return(exists)
 
 
 
@@ -49,5 +49,4 @@ def removeOld():
                 print (repr(fname), '  are not old enough to not be deleted')
 
 
-check(BDIR,DIR)
-
+check(BDIR, DIR)
