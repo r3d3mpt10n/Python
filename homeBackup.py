@@ -14,7 +14,7 @@ class BackUp(object):
         date = str(now)
         BDIR = input("Which directory would you like to backup too?\n ")
         DIR = input("Which directory would you like to create a backup of?\n ")
-        BFILE = BDIR + '/Home.backup' + date + 'tar.bz2'
+        BFILE = BDIR + "/Home.backup" + date + "tar.bz2"
 
         delta = datetime.timedelta(30)
         self.now30 = now - delta
@@ -48,10 +48,10 @@ class BackUp(object):
                 t = os.path.getmtime(fname)
                 dt = datetime.datetime.utcfromtimestamp(t)
                 if dt <= self.now30:
-                    print('Deleting', repr(fname))
+                    print("Deleting %s" % (fname))
                 # os.remove(fname)  # This is commented out while debugging.
                 else:
-                    print (repr(fname), '  are not old enough to not be deleted')
+                    print ("%s are not old enough to not be deleted" % (fname))
 
 
 BackUp()
