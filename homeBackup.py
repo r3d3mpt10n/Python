@@ -1,6 +1,7 @@
 #!/usr/bin/python3
-## This script will create monthly backups of $HOME and delete backups older than 30 days.
-##
+"""
+This script will create monthly backups of $HOME and delete backups older than 30 days.
+"""
 import tarfile
 import os
 import datetime
@@ -15,17 +16,21 @@ delta = datetime.timedelta(30)
 now30 = now - delta
 
 
-def check():
-    if os.path.isdir(BDIR):
-        exists = 'true'
-        runBackup(exists, BFILE, DIR)
-    else:
-        exists = 'false'
-        print(BDIR, 'Does not exist. This program will now exit')
-        exit()
+
+def check(BDIR,DIR):
+    try:
+        exists = os.path.isdir(BDIR)
+        runBackup(BFILE, DIR)
+    except OSError as e:
+        print("'%s' Does not exist. This program will now exit\n "
+               "Error is %s" % (BDIR, e))
+        return(exists, e)
 
 
-def runBackup(exists, BFILE, DIR):
+
+
+def runBackup(BFILE, DIR):
+
     with tarfile.open(BFILE, 'w:bz2') as tar:
         tar.add(DIR, arcname=os.path.basename(DIR))
     removeOld()
@@ -43,4 +48,6 @@ def removeOld():
             else:
                 print (repr(fname), '  are not old enough to not be deleted')
 
-check()
+
+check(BDIR,DIR)
+
