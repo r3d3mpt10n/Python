@@ -1,7 +1,5 @@
 #!/usr/bin/python3
-"""
-This script will create monthly backups of $HOME and delete backups older than 30 days.
-"""
+
 import tarfile
 import os
 import datetime
