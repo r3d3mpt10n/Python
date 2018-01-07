@@ -19,11 +19,9 @@ if args.username:
 if args.host:
     URL = args.host[0]
 else:
-    URL = "https://foreman.bne-home.net"
+    URL = "https://satellite.bsg.local"
 
 ## Connect to Satellite server
-
-#URL = "https://foreman.bne-home.net"
 
 SAT_API = "%s/katello/api/v2/" % URL
 KATELLO_API = "%s/katello/api/" % URL
