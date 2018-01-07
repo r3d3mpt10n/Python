@@ -19,7 +19,7 @@ if args.username:
 if args.host:
     URL = args.host[0]
 else:
-    URL = "https://satellite.bsg.local"
+    URL = "https://foreman.bne-home.net"
 
 ## Connect to Satellite server
 
