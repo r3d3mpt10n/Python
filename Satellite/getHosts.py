@@ -19,7 +19,7 @@ if args.username:
 if args.host:
     URL = args.host[0]
 else:
-    URL = "https://foreman.bne-home.net"
+    URL = "https://satellite.example.com"
 
 ## Connect to Satellite server
 
@@ -29,7 +29,7 @@ POST_HEADERS = {'content-type': 'application/json'}
 
 SSL_VERIFY = False
 
-ORG_NAME = "bne-home.net"
+ORG_NAME = "ORG"
 ENVIRONMENTS = ["Development", "Testing", "Production"]
 
 def get_hosts(hosts):
@@ -41,18 +41,19 @@ def get_hosts(hosts):
     for item in r['results']:
         name = item['certname']
         ident = item['id']
-        print(name + "," + str(ident))
         ident = str(ident)
-        try:
-            req = requests.get(URL + "/api/hosts/" + str(ident), auth=(USERNAME, PASSWORD), verify=SSL_VERIFY)
-            #req = requests.get(URL + "/api/hosts/3", auth=(USERNAME, PASSWORD), verify=SSL_VERIFY)
-            req = req.json()
-            print(req)
-            socks = req['facts']['cpu::cpu_socket(s)']
-            print(socks)
-            f.write(str(ident) + "," + name + "," + str(socks) + "," + '\n')
-        except KeyError:
-            continue
+        operatingSystem = item['operatingsystem_name']
+        ## FIX ME ##
+        if 'RedHat' or 'RHEL' in operatingSystem:
+            try:
+                    req = requests.get(URL + "/api/hosts/" + str(ident), auth=(USERNAME, PASSWORD), verify=SSL_VERIFY)
+                    req = req.json()
+                    socks = req['facts']['cpu::cpu_socket(s)']
+                    f.write(str(ident) + "," + name + "," + str(socks) + "," + operatingSystem + '\n')
+            except KeyError as e:
+                    continue
+        else:
+         continue
 
 
 
