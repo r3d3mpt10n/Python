@@ -6,7 +6,7 @@ from getpass import getpass
 
 ### We need to prompt the user for authentication details to avoid hard coding creds
 ### Here we will define the arguments --username and --password.
-parser = argparse.ArgumentParser(description='Add Username and Password')
+parser = argparse.ArgumentParser(description='Query the Foreman API to get the necessary information for monthly reporting')
 parser.add_argument('-u', '--username', nargs=1, dest='username', required=True, help='Username for Connecting to Satellite')
 parser.add_argument('-p', '--password', action='store_true', dest='password', required=True, help='Field for calling a Password prompt')
 parser.add_argument('-H', '--host', nargs=1, dest='host', required=False, help='Specify a URL to connect to. Such as https://satellite.example.com')
@@ -39,10 +39,15 @@ def get_hosts(hosts):
     r = r.json()
     for item in r['results']:
         host = item['certname']
-        req = requests.get(URL + "/api/hosts/" + host + "/facts", auth=(USERNAME, PASSWORD), verify=SSL_VERIFY)
+        ident = str(item['id'])
+        print(ident + host)
+        req = requests.get(URL + "/api/hosts/" + host, auth=(USERNAME, PASSWORD), verify=SSL_VERIFY)
         req = req.json()
-        for system in req['results'][host]["cpu::cpu_socket(s)"]:
-            print(system)
+        cpus = req['facts']['processorcount']
+        f.write(ident + ',' + host + ',' + cpus + '\n')
+        print(req['facts']['processorcount'])
+        #for system in req['results'][host]["cpu::cpu_socket(s)"]:
+         #   print(system)
             #sockets = system['physicalprocessorcount']
             #print(sockets)
 
