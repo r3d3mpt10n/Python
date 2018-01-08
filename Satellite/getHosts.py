@@ -38,7 +38,13 @@ def get_hosts(hosts):
     r = requests.get(URL + "/api/hosts", auth=(USERNAME, PASSWORD), verify=SSL_VERIFY)
     r = r.json()
     for item in r['results']:
-        f.write(item['certname'] + "\n" )
+        host = item['certname']
+        req = requests.get(URL + "/api/hosts/" + host + "/facts", auth=(USERNAME, PASSWORD), verify=SSL_VERIFY)
+        req = req.json()
+        for system in req['results'][host]["cpu::cpu_socket(s)"]:
+            print(system)
+            #sockets = system['physicalprocessorcount']
+            #print(sockets)
 
 
 
