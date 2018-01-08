@@ -34,11 +34,27 @@ ENVIRONMENTS = ["Development", "Testing", "Production"]
 
 def get_hosts(hosts):
     print("Making API Call")
+
     f = open('/tmp/hosts', 'w')
     r = requests.get(URL + "/api/hosts", auth=(USERNAME, PASSWORD), verify=SSL_VERIFY)
     r = r.json()
     for item in r['results']:
-        f.write(item['certname'] + "\n" )
+        name = item['certname']
+        ident = item['id']
+        print(name + "," + str(ident))
+        ident = str(ident)
+        try:
+            req = requests.get(URL + "/api/hosts/" + str(ident), auth=(USERNAME, PASSWORD), verify=SSL_VERIFY)
+            #req = requests.get(URL + "/api/hosts/3", auth=(USERNAME, PASSWORD), verify=SSL_VERIFY)
+            req = req.json()
+            print(req)
+            socks = req['facts']['cpu::cpu_socket(s)']
+            print(socks)
+            f.write(str(ident) + "," + name + "," + str(socks) + "," + '\n')
+        except KeyError:
+            continue
+
+
 
 
 
