@@ -19,24 +19,29 @@ if args.username:
 if args.host:
     URL = args.host[0]
 else:
-    URL = "https://satellite.example.com"
+    URL = "https://foreman.bne-home.net"
+
+if 'https://' not in URL:
+    URL = "https://%s" % args.host[0]
 
 ## Connect to Satellite server
-
+DEBUG = 0
 SAT_API = "%s/katello/api/v2/" % URL
 KATELLO_API = "%s/katello/api/" % URL
 POST_HEADERS = {'content-type': 'application/json'}
 
 SSL_VERIFY = False
 
-ORG_NAME = "ORG"
+ORG_NAME = "bne-home"
 ENVIRONMENTS = ["Development", "Testing", "Production"]
 
-def get_hosts(hosts):
+def get_hosts(hostCall):
     print("Making API Call")
-
-    f = open('/tmp/hosts', 'w')
-    r = requests.get(URL + "/api/hosts", auth=(USERNAME, PASSWORD), verify=SSL_VERIFY)
+    socks = ''
+    ident = ''
+    f = open('/tmp/hosts.csv', 'w')
+    f.write("ID,Hostname,CPUs, OS \n")
+    r = requests.get(URL + "/api/hosts" , auth=(USERNAME, PASSWORD), verify=SSL_VERIFY)
     r = r.json()
     for item in r['results']:
         name = item['certname']
@@ -50,13 +55,17 @@ def get_hosts(hosts):
                     req = req.json()
                     socks = req['facts']['cpu::cpu_socket(s)']
                     f.write(str(ident) + "," + name + "," + str(socks) + "," + operatingSystem + '\n')
-            except KeyError as e:
-                    continue
+            except KeyError or TypeError as e:
+                    if DEBUG:
+                        print(e)
+                    else:
+                        continue
         else:
-         continue
-
-
-
+            socks = '0'
+            f.write(str(ident) + "," + name + "," + str(socks) + "," + operatingSystem + '\n')
+            continue
+    f.close()
+    return (open("/tmp/hosts.csv", "r"))
 
 
 def main():
@@ -67,16 +76,14 @@ def main():
     """
 
     # Check if our organization already exists
-    org = get_hosts(SAT_API + "organizations/" + ORG_NAME)
+    #org = get_hosts(SAT_API + "organizations/" + ORG_NAME)
 
     # If our organization is not found, create it
 
     # Now, let's get a list of hosts
-    host_list = get_hosts(SAT_API + "/hosts")
 
-    #hosts = json.dump(host_list["results"["certname"]])
-    print(host_list)
-
+    for line in get_hosts(SAT_API):
+        print(line)
 
 if __name__ == "__main__":
     main()
